@@ -1,0 +1,19 @@
+---
+title: "Berry Project"
+author: "Ruxin Liu"
+date: "10/13/2020"
+output: pdf_document
+---
+
+```{r}
+# Load the data
+library(tidyverse)
+library(magrittr)
+berry <- read_csv("berries.csv", col_names = TRUE)
+```
+
+```{r}
+## look at number of unique values in each column
+berry %>% summarize_all(n_distinct) -> aa
+```
+
