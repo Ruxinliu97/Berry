@@ -1,9 +1,23 @@
 ---
-title: "Berry Project"
+title: "Berry Project -- Strawberry Data Report"
 author: "Ruxin Liu"
 date: "10/13/2020"
 output: pdf_document
 ---
+
+# Introduction
+
+# Methodology
+### Data cleaning and variable selection
+
+# Results and Discussion
+
+# Conclusion
+
+# Appendix
+## Code
+
+## Importing the data 
 
 ```{r}
 # Load the data
@@ -13,7 +27,65 @@ berry <- read_csv("berries.csv", col_names = TRUE)
 ```
 
 ```{r}
-## look at number of unique values in each column
-berry %>% summarize_all(n_distinct) -> aa
+# look at number of unique values in each column
+berry %>% summarize_all(n_distinct) -> unique
+# make a list of the columns with only one unique value
+one <- which(unique[1,]==1)
+# remove the 1-unique columns from the dataset
+berry %<>% select(-all_of(one))
+# State name and the State ANSI code are (sort of) redundant -- keep the name only
+berry %<>% select(-4)
 ```
+
+```{r}
+# Select data on Strawberries only from the berry data 
+strawberry <- berry %>% filter((Commodity == "STRAWBERRIES") & (Period == "YEAR"))
+```
+
+```{r}
+# Organize the column data item which contains lots of information in a cell
+ strawberry %<>% separate(`Data Item`, c("berry", "type", "data_item", 
+                                         "unit"), ",")
+```
+
+```{r}
+# Check which component contains the most NA
+if_na <- lapply(strawberry, is.na)
+lapply(if_na, sum)
+```
+
+
+## Reference of R Packages
+
+## Bibliography
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
