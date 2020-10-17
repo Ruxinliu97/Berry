@@ -40,12 +40,30 @@ berry %<>% select(-4)
 ```{r}
 # Select data on Strawberries only from the berry data 
 strawberry <- berry %>% filter((Commodity == "STRAWBERRIES") & (Period == "YEAR"))
+strawberry %<>% select(-c(Period, Commodity)) 
+# Since only the first 6 rows of the data have a non-specified domain category, 
+# in order to keep the information consistent, the first6 rows are removed.
+strawberry %<>% slice(-c(1 : 6))
 ```
 
 ```{r}
 # Organize the column data item which contains lots of information in a cell
- strawberry %<>% separate(`Data Item`, c("berry", "type", "data_item", 
-                                         "unit"), ",")
+# Does every Data Item begin with "STRAWBERRIES" --Yes
+sum(str_detect(strawberry$`Data Item`, "^STRAWBERRIES")) ==
+  length(strawberry$`Data Item`)
+strawberry %<>% separate(`Data Item`, c("berry", "type", "data_item", 
+                                         "unit"), sep = ",")
+
+```
+```{r}
+strawberry %<>% separate(type, c("b1", "type", "b2", "lab1", "b3", "b4"), " ")
+strawberry %<>% select(-c(b1, b2, b3, b4)) 
+strawberry %<>% rename(units = data_item) 
+strawberry %<>% select(-unit)
+strawberry %<>% rename(data_item = lab1) 
+# No need to contain name of berries anymore
+#strawberry %<>% select(-berry)
+
 ```
 
 ```{r}
