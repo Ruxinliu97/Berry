@@ -121,10 +121,76 @@ strawberry %<>% select(Year, State, market, harvest, materials, chemical,
 ```
 
 ```{r}
+# Check that all the variables are now tidy
+# unique(strawberry$Year)
+# unique(strawberry$State)
+# unique(strawberry$market)
+# unique(strawberry$harvest)
+# unique(strawberry$chemical)
+# unique(strawberry$units)
+```
+
+```{r}
+# Look at chemicals being applied to strawberry
+unfood <- strawberry 
+unfood <- unfood %<>% filter(harvest == "APPLICATIONS") 
+# Remove NAs 
+unfood %<>% filter(Value != "(D)")
+unfood %<>% filter(Value !=  "(NA)")
+unfood %<>% filter(units == "LB / ACRE / APPLICATION")
+unfood_1 <- unfood %>%  select(Year, State, chemical, Value)
+unfood_1 %<>% pivot_wider(names_from = chemical, values_from = Value)
+```
+
+```{r}
+# Convert the characters into numeric values for further calculation and analysis
+for(i in 1 : nrow(unfood_1)) {
+  unfood_1$FUNGICIDE[[i]] <- as.numeric(unfood_1$FUNGICIDE[[i]])
+}
+for(i in 1 : nrow(unfood_1)) {
+  unfood_1$HERBICIDE[[i]] <- as.numeric(unfood_1$HERBICIDE[[i]])
+  unfood_1$INSECTICIDE[[i]] <- as.numeric(unfood_1$INSECTICIDE[[i]])
+  unfood_1$OTHER[[i]] <- as.numeric(unfood_1$OTHER[[i]])
+}
+```
+
+```{r}
+# Calculate the total count of each type of chemical usage
+unfood_1 %<>% mutate(total_fungi = "NA")
+unfood_1 %<>% mutate(total_herb = "NA")
+unfood_1 %<>% mutate(total_insect = "NA")
+unfood_1 %<>% mutate(total_other = "NA")
+for(i in 1 : nrow(unfood_1)) {
+  unfood_1$total_fungi[i] <- length(unfood_1$FUNGICIDE[[i]])
+  unfood_1$total_herb[i] <- length(unfood_1$HERBICIDE[[i]])
+  unfood_1$total_insect[i] <- length(unfood_1$INSECTICIDE[[i]])
+  unfood_1$total_other[i] <- length(unfood_1$OTHER[[i]])
+}
 
 ```
 
+```{r}
+library(ggplot2)
+unfood %>% 
+ggplot(aes(x = Year)) +
+  geom_bar(aes(fill = State))
+```
+```{r}
+unfood %>% 
+ggplot(aes(x = Year)) +
+  geom_bar(aes(fill = chemical))
+```
+
 ## Reference of R Packages
+1. Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software,
+4(43),1686, https://doi.org/10.21105/joss.01686
+
+2.  Stefan Milton Bache and Hadley Wickham (2014). magrittr: A Forward-Pipe Operator
+for R. R package version 1.5. https://CRAN.R-project.org/package=magrittr
+
+3. H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New 
+York, 2016.
+
 
 ## Bibliography
 
