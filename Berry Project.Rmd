@@ -7,6 +7,12 @@ output: pdf_document
 
 # Introduction
 
+  As nowadays, more and more people are concerned about health, organic food 
+  becomes a more popular choice. In general, there is no universal way to define 
+  organic food, but since the main goal of organic agriculture is to optimize the
+  biodiversity  as well as the ecological balance, the useage of synthetic chemicals
+  are restricted (food unfolded 2019).
+  
 # Methodology
 ### Data cleaning and variable selection
 
@@ -194,7 +200,8 @@ York, 2016.
 
 ## Bibliography
 
-
+1. food unfolded (2019). *What is organic food | Is it really chemical free?* 
+[online]. Available from:https://www.foodunfolded.com/how-it-works/what-is-organic-food-is-it-really-chemical-free [accessed 18 October 2020].
 
 
 
