@@ -23,6 +23,7 @@ output: pdf_document
 # Load the data
 library(tidyverse)
 library(magrittr)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 berry <- read_csv("berries.csv", col_names = TRUE)
 ```
 
@@ -41,37 +42,59 @@ berry %<>% select(-4)
 # Select data on Strawberries only from the berry data 
 strawberry <- berry %>% filter((Commodity == "STRAWBERRIES") & (Period == "YEAR"))
 strawberry %<>% select(-c(Period, Commodity)) 
-# Since only the first 6 rows of the data have a non-specified domain category, 
-# in order to keep the information consistent, the first6 rows are removed.
-strawberry %<>% slice(-c(1 : 6))
 ```
 
 ```{r}
 # Organize the column data item which contains lots of information in a cell
-# Does every Data Item begin with "STRAWBERRIES" --Yes
-sum(str_detect(strawberry$`Data Item`, "^STRAWBERRIES")) ==
-  length(strawberry$`Data Item`)
-strawberry %<>% separate(`Data Item`, c("berry", "type", "data_item", 
-                                         "unit"), sep = ",")
-
+# unique(strawberry$`Data Item`)
+strawberry %<>% separate(`Data Item`, c("s1", "s2"), sep = "-")
+strawberry %<>% separate(s1, c("berry", "type"), sep = ",")
+strawberry %<>% separate(s2, c("data_item", "unit"), sep = ",")
 ```
-```{r}
-strawberry %<>% separate(type, c("b1", "type", "b2", "lab1", "b3", "b4"), " ")
-strawberry %<>% select(-c(b1, b2, b3, b4)) 
-strawberry %<>% rename(units = data_item) 
-strawberry %<>% select(-unit)
-strawberry %<>% rename(data_item = lab1) 
-# No need to contain name of berries anymore
-#strawberry %<>% select(-berry)
 
+
+```{r}
+unique(strawberry$berry)
+# Since all the data selected are about strawberries, there is no need to 
+# contain name of berries anymore
+strawberry %<>% select(-berry)
 ```
 
 ```{r}
-# Check which component contains the most NA
-if_na <- lapply(strawberry, is.na)
-lapply(if_na, sum)
+# Organize the column Domain
+strawberry %<>% separate(Domain, c("Domain_1", "Domain_2"), sep = ", ")
 ```
 
+```{r}
+# Organize the column Domain Category
+strawberry %<>% separate(`Domain Category`, c("DC_1", "DC_2"), sep = ", ")
+strawberry %<>% separate(DC_1, c("DC_1_left", "DC_1_right"), sep = ": ")
+strawberry %<>% separate(DC_2, c("DC_2_left", "DC_2_right"), sep = ": ") 
+```
+
+```{r}
+# The original format of one specific domain type 
+# (CHEMICAL, INSECTICIDE: (CYFLUMETOFEN= 138831)) is not processed successfully 
+# with the separate function, therefore they need to be changed manually. 
+manual <- c(1036, 1148, 1258, 1368, 1480, 1977, 2075, 2171, 2267, 2365, 
+                       2469, 2542, 2613, 2684, 2757, 2985, 3019, 3052, 3085, 3120)
+strawberry$DC_1_left[manual] <- "CHEMICAL"
+strawberry$DC_2_left[manual] <- "INSECTICIDE"
+strawberry$DC_2_right[manual] <- "(CYFLUMETOFEN = 138831)"
+# Check and delete the redundant variables 
+paste(strawberry$Domain_1, strawberry$DC_1_left) %>% unique
+strawberry %<>%  select(-DC_1_left) 
+```
+
+```{r}
+# Check and delete the redundant variables 
+paste(strawberry$Domain_2, strawberry$DC_2_left) %>% unique
+strawberry %<>%  select(-DC_2_left) 
+```
+
+```{r}
+
+```
 
 ## Reference of R Packages
 
