@@ -45,6 +45,15 @@ strawberry %<>% select(-c(Period, Commodity))
 ```
 
 ```{r}
+# The original format of one specific domain type 
+# (CHEMICAL, INSECTICIDE: (CYFLUMETOFEN= 138831)) is not processed successfully 
+# with the separate function, therefore they need to be changed manually. 
+manual <- c(1036, 1148, 1258, 1368, 1480, 1977, 2075, 2171, 2267, 2365, 
+                       2469, 2542, 2613, 2684, 2757, 2985, 3019, 3052, 3085, 3120)
+strawberry$`Domain Category`[manual] <- "CHEMICAL, INSECTICIDE: (CYFLUMETOFEN = 138831)"
+```
+
+```{r}
 # Organize the column data item which contains lots of information in a cell
 # unique(strawberry$`Data Item`)
 strawberry %<>% separate(`Data Item`, c("s1", "s2"), sep = "-")
@@ -73,14 +82,6 @@ strawberry %<>% separate(DC_2, c("DC_2_left", "DC_2_right"), sep = ": ")
 ```
 
 ```{r}
-# The original format of one specific domain type 
-# (CHEMICAL, INSECTICIDE: (CYFLUMETOFEN= 138831)) is not processed successfully 
-# with the separate function, therefore they need to be changed manually. 
-manual <- c(1036, 1148, 1258, 1368, 1480, 1977, 2075, 2171, 2267, 2365, 
-                       2469, 2542, 2613, 2684, 2757, 2985, 3019, 3052, 3085, 3120)
-strawberry$DC_1_left[manual] <- "CHEMICAL"
-strawberry$DC_2_left[manual] <- "INSECTICIDE"
-strawberry$DC_2_right[manual] <- "(CYFLUMETOFEN = 138831)"
 # Check and delete the redundant variables 
 paste(strawberry$Domain_1, strawberry$DC_1_left) %>% unique
 strawberry %<>%  select(-DC_1_left) 
@@ -90,6 +91,33 @@ strawberry %<>%  select(-DC_1_left)
 # Check and delete the redundant variables 
 paste(strawberry$Domain_2, strawberry$DC_2_left) %>% unique
 strawberry %<>%  select(-DC_2_left) 
+```
+
+```{r}
+# Change all NA values into a space
+strawberry[is.na(strawberry)] <- " "
+strawberry %<>% mutate(Domain_1 = "CHEMICAL", Domain_1 = "") 
+strawberry %<>% mutate(Chemical = str_trim(paste(Domain_1, Domain_2)))
+strawberry %<>% mutate(market = str_trim(type))
+strawberry %<>% mutate(harvest = str_trim(data_item))
+```
+
+```{r}
+strawberry %<>% rename(chem_family = DC_1_right, materials = DC_2_right)
+#All the rows with information on chem_family have no information on Chemical, 
+# so it is reasonable to combine these columns.
+strawberry %<>% mutate(chemical = str_trim(paste(chem_family, Chemical)))
+```
+
+```{r}
+strawberry %<>% separate(unit, c("u1", "u2", "u3", "u4", "u5", "u6", "u7", 
+                                 "u8"), sep = " ")
+# Only leave the useful information after "measure in"
+strawberry[is.na(strawberry)] <- " "
+strawberry %<>% mutate(units = str_trim(paste(u4, u5, u6, u7, u8)))
+# Select the variables that are kept in the final data 
+strawberry %<>% select(Year, State, market, harvest, materials, chemical,
+                       Value, units)
 ```
 
 ```{r}
