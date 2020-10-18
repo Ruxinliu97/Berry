@@ -11,12 +11,54 @@ output: pdf_document
   becomes a more popular choice. In general, there is no universal way to define 
   organic food, but since the main goal of organic agriculture is to optimize the
   biodiversity  as well as the ecological balance, the useage of synthetic chemicals
-  are restricted (food unfolded 2019).
+  are restricted (food unfolded 2019). In this study, the berry data collected by 
+  the United States Department of Agriculture (USDA) database selector and stored 
+  online was explored and analyzed to compare the types and quantities of chemicals
+  applied for planting strawberries during different years and in different states. 
+  
   
 # Methodology
-### Data cleaning and variable selection
+### Data Cleaning & Variable Selection
 
-# Results and Discussion
+  The berry dataset contains information about three kinds of berries, which are
+  blueberries, raspberries and strawberries. In this study, only the data points 
+  related to strawberries are considered. Firstly, some of the variables only have
+  one unique value for all the observations, which cannot provide any useful 
+  information for the purpose of comparison and can be removed. It turns out that
+  12 out of the 21 variables only have one unique value, such as "Program", "Week 
+  Ending", "Geo Level" and etc. After the first step, the dataset now had 8 variables
+  and 3220 observations in total. Next, since the variable "Data Item" contains
+  lots of different information in one single cell, it needs to be reorganized 
+  and renamed. After this step, the variable "Data Item" were separated into 4 
+  new variables, which are "berry" (types of berry), "market" (marketing condition),
+  "harvest" (harvest condition) and "units" (units of values collected). Similarly,
+  the variable "Domain" was separated into "Domain_1" and "Domain_2", and the variable
+  "Domain Category" was separated into "DC_1_left", "DC_1_right", "DC_2_left" and 
+  "DC_2_right" first. After carefully checking the unique combinations, it was 
+  found that variables "Domain_1" and "DC_1_left" produced exactly the same values.
+  Similarly, it was found that variables "Domain_2" and "DC_2_left" produced exactly
+  the same values. Therefore, only "Domain_1" and "Domain_2" were kept, combined 
+  and renamed to be "chemical", which states the type of chemicals being used.
+  
+  
+  After the above steps, the data still contained much information than needed 
+  and required deeper cleaning. The final strawberry data set was selected to 
+  include 8 variables, which were Year, State, market, harvest, materials, chemical,
+  Values and units, that all could provide useful information for analysis. All 
+  the NA values and D values that are used to withhold to avoid data disclosure 
+  were removed from the variable "Value". Then, this tidy data was used to subset
+  a smaller data set of interest, which only looked at observations where chemicals
+  were applied. This was done by only selecting rows with harvest values equal to 
+  "APPLICATIONS" and unit values equal to "LB / ACRE / APPLICATION". Now, the smaller 
+  data set "unfood" only contained information about the pounds of chemicals used
+  per acre in some states and years, which were all prepared to be analyzed and 
+  compared.
+
+
+  All the R code and data used were attached in the Appendix and also in the 
+  GitHub repository (https://github.com/Ruxinliu97/Berry).  
+
+# Exploratory Data Analysis (EDA)
 
 # Conclusion
 
@@ -34,13 +76,13 @@ berry <- read_csv("berries.csv", col_names = TRUE)
 ```
 
 ```{r}
-# look at number of unique values in each column
+# Look at number of unique values in each column
 berry %>% summarize_all(n_distinct) -> unique
-# make a list of the columns with only one unique value
-one <- which(unique[1,]==1)
-# remove the 1-unique columns from the dataset
+# Make a list of the columns with only one unique value
+one <- which(unique[1,] == 1)
+# Remove the 1-unique columns from the dataset
 berry %<>% select(-all_of(one))
-# State name and the State ANSI code are (sort of) redundant -- keep the name only
+# State name and the State ANSI code are redundant -- keep the name only
 berry %<>% select(-4)
 ```
 
@@ -200,8 +242,20 @@ York, 2016.
 
 ## Bibliography
 
-1. food unfolded (2019). *What is organic food | Is it really chemical free?* 
+1. MA615 notes (class 14 - class 17)
+
+2. food unfolded (2019). *What is organic food | Is it really chemical free?* 
 [online]. Available from:https://www.foodunfolded.com/how-it-works/what-is-organic-food-is-it-really-chemical-free [accessed 18 October 2020].
+
+3. USDA (2019). *Quick Stats* [online]. Available from:
+https://quickstats.nass.usda.gov/ [accessed 16 October 2020].
+
+4. USDA (2019). *Quick Stats* [online]. Available from:
+https://quickstats.nass.usda.gov/results/D416E96E-3D5C-324C-9334-1D38DF88FFF1
+[accessed 16 October 2020].
+
+
+
 
 
 
