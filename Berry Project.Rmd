@@ -49,10 +49,14 @@ output: pdf_document
   were removed from the variable "Value". Then, this tidy data was used to subset
   a smaller data set of interest, which only looked at observations where chemicals
   were applied. This was done by only selecting rows with harvest values equal to 
-  "APPLICATIONS" and unit values equal to "LB / ACRE / APPLICATION". Now, the smaller 
-  data set "unfood" only contained information about the pounds of chemicals used
-  per acre in some states and years, which were all prepared to be analyzed and 
-  compared.
+  "APPLICATIONS" and unit values equal to "LB / ACRE / APPLICATION". The reason 
+  of selecting this combination was that the original data set was messy with values 
+  measured in different units, and this combination could provide useful and accurate
+  information about the usage of chemicals.This sub-dataset should be larger, but 
+  all missing values were removed and only one single measurement unit was selected
+  for standard comparison. Now, the smaller data set "unfood" only contained information
+  about the pounds of chemicals usage per acre per application in some states and 
+  years, which were all prepared to be analyzed and compared.
 
 
   All the R code and data used were attached in the Appendix and also in the 
@@ -106,8 +110,8 @@ strawberry[is.na(strawberry)] <- " "
 strawberry %<>% mutate(units = str_trim(paste(u4, u5, u6, u7, u8)))
 strawberry %<>% select(Year, State, market, harvest, materials, chemical,
                        Value, units)
-unfood <- strawberry 
-unfood <- unfood %<>% filter(harvest == "APPLICATIONS") 
+unfood <- strawberry
+unfood %<>% filter(harvest == "APPLICATIONS") 
 unfood %<>% filter(Value != "(D)")
 unfood %<>% filter(Value !=  "(NA)")
 unfood %<>% filter(units == "LB / ACRE / APPLICATION")
@@ -237,7 +241,22 @@ knitr::kable(other, caption = "Other Application ", digits = 3) %>%
   For all fungicides, herbicides and insecticides, the maximum usage per pound per
   acre per application always happened in California. Although in some years, the
   minimum usage also occurred in California, the pattern still suggests that there 
-  might be some issues with the strawberry planting industry in California.
+  might be some issues with the strawberry planting industry in California. After 
+  some research, it is found that long before year 2016 this problem was noticed 
+  and reported. The total strawberry farms in California only took up less than 
+  1% of the farmland, but the chemicals used there could account for 8% of the 
+  total pesticide usage in the state, which was an obviously high usage and the 
+  data analysis in this study proved this as well (The Guardian 2014). Even with 
+  the current development of technology, it was still extremely challenging to 
+  produce cheap and year-around strawberries without harmful chemicals (Smithsonian
+  MAGAZINE 2018). Therefore, although it is more time and money consuming, it might 
+  be a good idea to consider purchasing organic strawberries and figuring out where 
+  the strawberries are planted, in order to have more healthy strawberries.
+  
+  
+  For future studies on this berry data, observations from all blueberries, raspberries 
+  and strawberries could be combined for analysis to compare the different usage 
+  of chemicals across berry types.  
 
 
 
@@ -402,6 +421,7 @@ unfood %>%
 ggplot(aes(x = Year)) +
   geom_bar(aes(fill = State))
 ```
+
 ```{r, eval = FALSE}
 # Fig.2
 unfood %>% 
@@ -488,6 +508,17 @@ https://quickstats.nass.usda.gov/ [accessed 16 October 2020].
 4. USDA (2019). *Quick Stats* [online]. Available from:
 https://quickstats.nass.usda.gov/results/D416E96E-3D5C-324C-9334-1D38DF88FFF1
 [accessed 16 October 2020].
+
+5. Smithsonian MAGAZINE (2018). *The Toxic Rise of the California Strawberry* 
+[online]. Available from:
+https://www.smithsonianmag.com/science-nature/toxic-rise-california-strawberry-180967934/
+[accessed 18 October 2020].
+
+6. The Guardian (2014). *California’s strawberry industry is hooked on dangerous pesticides* 
+[online]. Available from:
+https://www.theguardian.com/us-news/2014/nov/10/-sp-california-strawberry-industry-pesticides
+[accessed 18 October 2020].
+
 
 
 
