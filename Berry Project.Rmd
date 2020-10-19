@@ -64,7 +64,13 @@ output: pdf_document
   Based on the dataset, it is found that only California, Florida and Washington 
   used chemicals when planting strawberries during the year 2016, 2018 and 2019.
   In order to see any differences, histograms are plotted by using the ggplot2 
-  package.
+  package. From Fig.1, it is shown that the number of strawberry farms which 
+  applied chemicals varied a lot from states to states. For Washington, there
+  were just 3 cases of chemical usage detected in the year 2016 only. The figure
+  also conveyed that although none of the farms used chemicals in California and 
+  Florida for the year 2017, there was continuous and relatively large use of 
+  chemicals in other years. Among the 3 states, the farms that used chemicals when
+  planting strawberries were mostly from California.
   
   
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
@@ -109,6 +115,7 @@ unfood_1 <- unfood %>%  select(Year, State, chemical, Value)
 unfood_1 %<>% pivot_wider(names_from = chemical, values_from = Value)
 ```
 
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 unfood %>% 
 ggplot(aes(x = Year)) +
@@ -116,6 +123,11 @@ ggplot(aes(x = Year)) +
   ggtitle("Number Of Strawberry Farms That Used Chemicals") +
   labs(caption = "Fig.1")
 ```
+
+  From Fig.2, it is shown that among all 225 farms, the kinds of chemicals being 
+  applied were also different. It is clear that for all 3 years, herbicides and 
+  insecticides were used by most farms.
+
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 unfood %>% 
 ggplot(aes(x = Year)) +
@@ -124,6 +136,9 @@ ggplot(aes(x = Year)) +
   labs(caption = "Fig.2")
 ```
 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+
+```
   
 
 # Conclusion
