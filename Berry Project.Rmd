@@ -136,12 +136,60 @@ ggplot(aes(x = Year)) +
   labs(caption = "Fig.2")
 ```
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
+  
 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(kableExtra)
+fungicide <- unfood %>% 
+  filter(chemical == "FUNGICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(fungicide, caption = "Table.1: Fungicide Application ", digits = 3)
 ```
   
 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+herbicide <- unfood %>% 
+  filter(chemical == "HERBICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(herbicide, caption = "Table.2: Herbicide Application ", digits = 3)
+```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+insecticide <- unfood %>% 
+  filter(chemical == "INSECTICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(insecticide, caption = "Table.3: Insecticide Application ", digits = 3)
+```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+other <- unfood %>% 
+  filter(chemical == "OTHER") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(other, caption = "Table.4: Other Application ", digits = 3)
+```
+
+
+
 # Conclusion
+
+
+
 
 # Appendix
 ## Code
@@ -311,6 +359,58 @@ ggplot(aes(x = Year)) +
   geom_bar(aes(fill = chemical))
 ```
 
+
+```{r, eval = FALSE}
+# Table 1: Summarize the fungicide application
+library(kableExtra)
+fungicide <- unfood %>% 
+  filter(chemical == "FUNGICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(fungicide, caption = "Table.1: Fungicide Application ", digits = 3)
+```
+  
+
+```{r, eval = FALSE}
+# Table 2: Summarize the herbicide application
+herbicide <- unfood %>% 
+  filter(chemical == "HERBICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(herbicide, caption = "Table.2: Herbicide Application ", digits = 3)
+```
+
+```{r, eval = FALSE}
+# Table 3: Summarize the insecticide application
+insecticide <- unfood %>% 
+  filter(chemical == "INSECTICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(insecticide, caption = "Table.3: Insecticide Application ", digits = 3)
+```
+
+```{r, eval = FALSE}
+# Table 4: Summarize the other applications
+other <- unfood %>% 
+  filter(chemical == "OTHER") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(other, caption = "Table.4: Other Application ", digits = 3)
+```
+
+
 ## Reference of R Packages
 1. Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software,
 4(43),1686, https://doi.org/10.21105/joss.01686
@@ -320,6 +420,9 @@ for R. R package version 1.5. https://CRAN.R-project.org/package=magrittr
 
 3. H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New 
 York, 2016.
+
+4. Hao Zhu (2019). kableExtra: Construct Complex Table with 'kable' and Pipe Syntax. R
+  package version 1.1.0. https://CRAN.R-project.org/package=kableExtra
 
 
 ## Bibliography
