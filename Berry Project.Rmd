@@ -124,9 +124,9 @@ ggplot(aes(x = Year)) +
   labs(caption = "Fig.1")
 ```
 
-  From Fig.2, it is shown that among all 225 farms, the kinds of chemicals being 
-  applied were also different. It is clear that for all 3 years, herbicides and 
-  insecticides were used by most farms.
+  From Fig.2, it is shown that among the 225 observations, the kinds of chemicals 
+  being applied were also different. It is clear that for all 3 years, herbicides 
+  and insecticides were used by most farms.
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 unfood %>% 
@@ -136,6 +136,10 @@ ggplot(aes(x = Year)) +
   labs(caption = "Fig.2")
 ```
 
+
+  In order to make a better comparison, the 4 kinds of synthetic chemicals, which
+  are fungicide, herbicide, insecticide and other, were also explored and summarized
+  separately.
   
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
