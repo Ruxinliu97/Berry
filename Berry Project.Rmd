@@ -10,7 +10,7 @@ output: pdf_document
   As nowadays, more and more people are concerned about health, organic food 
   becomes a more popular choice. In general, there is no universal way to define 
   organic food, but since the main goal of organic agriculture is to optimize the
-  biodiversity  as well as the ecological balance, the useage of synthetic chemicals
+  biodiversity  as well as the ecological balance, the usage of synthetic chemicals
   are restricted (food unfolded 2019). In this study, the berry data collected by 
   the United States Department of Agriculture (USDA) database selector and stored 
   online was explored and analyzed to compare the types and quantities of chemicals
@@ -139,8 +139,20 @@ ggplot(aes(x = Year)) +
 
   In order to make a better comparison, the 4 kinds of synthetic chemicals, which
   are fungicide, herbicide, insecticide and other, were also explored and summarized
-  separately.
+  separately. Based on the results of Table 1 below, in 2016 one farm in Florida 
+  had the lowest pounds of fungicide usage per acre per application, which was 0.01,
+  while one farm in California had the highest usage application, which was 3.712. 
+  In 2018, one farm in California had the lowest pounds of fungicide usage per acre
+  per application, which was 0.022, while another farm in California had the highest 
+  usage, which was 4.864. In 2019, one farm in California had the lowest pounds 
+  of fungicide usage per acre per application, which was 0.023, while one farm
+  in Florida had the highest usage, which was 3.997. The sum of the fungicide pounds
+  may not be suitable for comparisons since each State had different number of 
+  strawberry farms. However, from the mean value, it is clear that in recent years,
+  Florida on average had a noticeably higher average pounds of fungicide usage 
+  per acre per application. 
   
+
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 library(kableExtra)
@@ -151,9 +163,18 @@ fungicide <- unfood %>%
             max = max(as.numeric(Value)),
             mean = mean(as.numeric(Value)), 
             sum = sum(as.numeric(Value)))
-knitr::kable(fungicide, caption = "Table.1: Fungicide Application ", digits = 3)
+knitr::kable(fungicide, caption = "Fungicide Application ", digits = 3) %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
   
+  
+  Based on the results of Table 2 below, in 2016 one farm in California had the lowest 
+  pounds of herbicide usage per acre per application, which was 0.091, while 
+  also one farm in California had the highest usage, which was 1.382. However, in
+  2018 and 2019, strawberry farms from Washington and Florida did not have any 
+  herbicide application, which suggests that only strawberry farms from California 
+  used herbicides in recent years. Also, both the highest mean usage and the 
+  highest total usage occurred in 2016. 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 herbicide <- unfood %>% 
@@ -163,9 +184,14 @@ herbicide <- unfood %>%
             max = max(as.numeric(Value)),
             mean = mean(as.numeric(Value)), 
             sum = sum(as.numeric(Value)))
-knitr::kable(herbicide, caption = "Table.2: Herbicide Application ", digits = 3)
+knitr::kable(herbicide, caption = "Herbicide Application ", digits = 3) %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
+
+  Based on the results of Table 3 below, in 2016 one farm in California had the lowest pounds of insecticide usage per acre per application, which was 0.019, while  also one farm in California had the highest usage, which was 5.86. In 2018, only farms in California had insecticide applications with a maximum pounds per acre of 6.34. In 2019, one farm in California had the lowest pounds of insecticide usage per acre per application, which was 0.019, while  again one farm in California had the highest usage, which was 5.151. Overall, regardless of which year, California always had the highest mean usage of insecticide.
+
+  
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 insecticide <- unfood %>% 
   filter(chemical == "INSECTICIDE") %>% 
@@ -174,8 +200,17 @@ insecticide <- unfood %>%
             max = max(as.numeric(Value)),
             mean = mean(as.numeric(Value)), 
             sum = sum(as.numeric(Value)))
-knitr::kable(insecticide, caption = "Table.3: Insecticide Application ", digits = 3)
+knitr::kable(insecticide, caption = "Insecticide Application ", digits = 3) %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
+
+
+  Lastly, from Table 4 below, it is shown that only strawberry farms from California
+  used other kinds of chemicals and the mean usage in pounds per acre per application
+  were much larger than the previous three kinds of chemical. Since the kinds of 
+  chemicals that were defined as the other category were not clear, it is not 
+  reasonable to consider these values into the comparison other than just a
+  reference. 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 other <- unfood %>% 
@@ -185,13 +220,24 @@ other <- unfood %>%
             max = max(as.numeric(Value)),
             mean = mean(as.numeric(Value)), 
             sum = sum(as.numeric(Value)))
-knitr::kable(other, caption = "Table.4: Other Application ", digits = 3)
+knitr::kable(other, caption = "Other Application ", digits = 3) %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 
 
 # Conclusion
 
+  In conclusion, based on the exploratory data analysis of the strawberry data,
+  it is shown that only Florida, California and Washington had chemical applications
+  in the farms, and the pounds of usage per acre per application differed by the 
+  type of chemicals and also the years. And among the 225 observations where chemical 
+  was applied, most sites were from California and only a few sites were from Washington.
+  
+  For all fungicides, herbicides and insecticides, the maximum usage per pound per
+  acre per application always happened in California. Although in some years, the
+  minimum usage also occurred in California, the pattern still suggests that there 
+  might be some issues with the strawberry planting industry in California.
 
 
 
