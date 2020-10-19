@@ -58,7 +58,73 @@ output: pdf_document
   All the R code and data used were attached in the Appendix and also in the 
   GitHub repository (https://github.com/Ruxinliu97/Berry).  
 
+
 # Exploratory Data Analysis (EDA)
+
+  Based on the dataset, it is found that only California, Florida and Washington 
+  used chemicals when planting strawberries during the year 2016, 2018 and 2019.
+  In order to see any differences, histograms are plotted by using the ggplot2 
+  package.
+  
+  
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(magrittr)
+berry <- read_csv("berries.csv", col_names = TRUE)
+berry %>% summarize_all(n_distinct) -> unique
+one <- which(unique[1,] == 1)
+berry %<>% select(-all_of(one))
+berry %<>% select(-4)
+strawberry <- berry %>% filter((Commodity == "STRAWBERRIES") & (Period == "YEAR"))
+strawberry %<>% select(-c(Period, Commodity)) 
+manual <- c(1036, 1148, 1258, 1368, 1480, 1977, 2075, 2171, 2267, 2365, 
+                       2469, 2542, 2613, 2684, 2757, 2985, 3019, 3052, 3085, 3120)
+strawberry$`Domain Category`[manual] <- "CHEMICAL, INSECTICIDE: (CYFLUMETOFEN = 138831)"
+strawberry %<>% separate(`Data Item`, c("s1", "s2"), sep = "-")
+strawberry %<>% separate(s1, c("berry", "type"), sep = ",")
+strawberry %<>% separate(s2, c("data_item", "unit"), sep = ",")
+strawberry %<>% separate(Domain, c("Domain_1", "Domain_2"), sep = ", ")
+strawberry %<>% separate(`Domain Category`, c("DC_1", "DC_2"), sep = ", ")
+strawberry %<>% separate(DC_1, c("DC_1_left", "DC_1_right"), sep = ": ")
+strawberry %<>% separate(DC_2, c("DC_2_left", "DC_2_right"), sep = ": ") 
+strawberry[is.na(strawberry)] <- " "
+strawberry %<>% mutate(Domain_1 = "CHEMICAL", Domain_1 = "") 
+strawberry %<>% mutate(Chemical = str_trim(paste(Domain_1, Domain_2)))
+strawberry %<>% mutate(market = str_trim(type))
+strawberry %<>% mutate(harvest = str_trim(data_item))
+strawberry %<>% rename(chem_family = DC_1_right, materials = DC_2_right)
+strawberry %<>% mutate(chemical = str_trim(paste(chem_family, Chemical)))
+strawberry %<>% separate(unit, c("u1", "u2", "u3", "u4", "u5", "u6", "u7", 
+                                 "u8"), sep = " ")
+strawberry[is.na(strawberry)] <- " "
+strawberry %<>% mutate(units = str_trim(paste(u4, u5, u6, u7, u8)))
+strawberry %<>% select(Year, State, market, harvest, materials, chemical,
+                       Value, units)
+unfood <- strawberry 
+unfood <- unfood %<>% filter(harvest == "APPLICATIONS") 
+unfood %<>% filter(Value != "(D)")
+unfood %<>% filter(Value !=  "(NA)")
+unfood %<>% filter(units == "LB / ACRE / APPLICATION")
+unfood_1 <- unfood %>%  select(Year, State, chemical, Value)
+unfood_1 %<>% pivot_wider(names_from = chemical, values_from = Value)
+```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+unfood %>% 
+ggplot(aes(x = Year)) +
+  geom_bar(aes(fill = State)) +
+  ggtitle("Number Of Strawberry Farms That Used Chemicals") +
+  labs(caption = "Fig.1")
+```
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+unfood %>% 
+ggplot(aes(x = Year)) +
+  geom_bar(aes(fill = chemical)) +
+  ggtitle("The Annual Usage Frequency Of Each Chemicals") +
+  labs(caption = "Fig.2")
+```
+
+  
 
 # Conclusion
 
@@ -67,15 +133,14 @@ output: pdf_document
 
 ## Importing the data 
 
-```{r}
+```{r, eval = FALSE}
 # Load the data
 library(tidyverse)
 library(magrittr)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 berry <- read_csv("berries.csv", col_names = TRUE)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Look at number of unique values in each column
 berry %>% summarize_all(n_distinct) -> unique
 # Make a list of the columns with only one unique value
@@ -86,13 +151,13 @@ berry %<>% select(-all_of(one))
 berry %<>% select(-4)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Select data on Strawberries only from the berry data 
 strawberry <- berry %>% filter((Commodity == "STRAWBERRIES") & (Period == "YEAR"))
 strawberry %<>% select(-c(Period, Commodity)) 
 ```
 
-```{r}
+```{r, eval = FALSE}
 # The original format of one specific domain type 
 # (CHEMICAL, INSECTICIDE: (CYFLUMETOFEN= 138831)) is not processed successfully 
 # with the separate function, therefore they need to be changed manually. 
@@ -101,7 +166,7 @@ manual <- c(1036, 1148, 1258, 1368, 1480, 1977, 2075, 2171, 2267, 2365,
 strawberry$`Domain Category`[manual] <- "CHEMICAL, INSECTICIDE: (CYFLUMETOFEN = 138831)"
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Organize the column data item which contains lots of information in a cell
 # unique(strawberry$`Data Item`)
 strawberry %<>% separate(`Data Item`, c("s1", "s2"), sep = "-")
@@ -110,38 +175,38 @@ strawberry %<>% separate(s2, c("data_item", "unit"), sep = ",")
 ```
 
 
-```{r}
+```{r, eval = FALSE}
 unique(strawberry$berry)
 # Since all the data selected are about strawberries, there is no need to 
 # contain name of berries anymore
 strawberry %<>% select(-berry)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Organize the column Domain
 strawberry %<>% separate(Domain, c("Domain_1", "Domain_2"), sep = ", ")
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Organize the column Domain Category
 strawberry %<>% separate(`Domain Category`, c("DC_1", "DC_2"), sep = ", ")
 strawberry %<>% separate(DC_1, c("DC_1_left", "DC_1_right"), sep = ": ")
 strawberry %<>% separate(DC_2, c("DC_2_left", "DC_2_right"), sep = ": ") 
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Check and delete the redundant variables 
 paste(strawberry$Domain_1, strawberry$DC_1_left) %>% unique
 strawberry %<>%  select(-DC_1_left) 
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Check and delete the redundant variables 
 paste(strawberry$Domain_2, strawberry$DC_2_left) %>% unique
 strawberry %<>%  select(-DC_2_left) 
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Change all NA values into a space
 strawberry[is.na(strawberry)] <- " "
 strawberry %<>% mutate(Domain_1 = "CHEMICAL", Domain_1 = "") 
@@ -150,14 +215,14 @@ strawberry %<>% mutate(market = str_trim(type))
 strawberry %<>% mutate(harvest = str_trim(data_item))
 ```
 
-```{r}
+```{r, eval = FALSE}
 strawberry %<>% rename(chem_family = DC_1_right, materials = DC_2_right)
 #All the rows with information on chem_family have no information on Chemical, 
 # so it is reasonable to combine these columns.
 strawberry %<>% mutate(chemical = str_trim(paste(chem_family, Chemical)))
 ```
 
-```{r}
+```{r, eval = FALSE}
 strawberry %<>% separate(unit, c("u1", "u2", "u3", "u4", "u5", "u6", "u7", 
                                  "u8"), sep = " ")
 # Only leave the useful information after "measure in"
@@ -168,7 +233,7 @@ strawberry %<>% select(Year, State, market, harvest, materials, chemical,
                        Value, units)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Check that all the variables are now tidy
 # unique(strawberry$Year)
 # unique(strawberry$State)
@@ -178,7 +243,7 @@ strawberry %<>% select(Year, State, market, harvest, materials, chemical,
 # unique(strawberry$units)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Look at chemicals being applied to strawberry
 unfood <- strawberry 
 unfood <- unfood %<>% filter(harvest == "APPLICATIONS") 
@@ -190,7 +255,7 @@ unfood_1 <- unfood %>%  select(Year, State, chemical, Value)
 unfood_1 %<>% pivot_wider(names_from = chemical, values_from = Value)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Convert the characters into numeric values for further calculation and analysis
 for(i in 1 : nrow(unfood_1)) {
   unfood_1$FUNGICIDE[[i]] <- as.numeric(unfood_1$FUNGICIDE[[i]])
@@ -202,7 +267,7 @@ for(i in 1 : nrow(unfood_1)) {
 }
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Calculate the total count of each type of chemical usage
 unfood_1 %<>% mutate(total_fungi = "NA")
 unfood_1 %<>% mutate(total_herb = "NA")
@@ -217,13 +282,15 @@ for(i in 1 : nrow(unfood_1)) {
 
 ```
 
-```{r}
+```{r, eval = FALSE}
+# Fig.1
 library(ggplot2)
 unfood %>% 
 ggplot(aes(x = Year)) +
   geom_bar(aes(fill = State))
 ```
-```{r}
+```{r, eval = FALSE}
+# Fig.2
 unfood %>% 
 ggplot(aes(x = Year)) +
   geom_bar(aes(fill = chemical))
