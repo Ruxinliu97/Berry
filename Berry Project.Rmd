@@ -10,7 +10,7 @@ output: pdf_document
   As nowadays, more and more people are concerned about health, organic food 
   becomes a more popular choice. In general, there is no universal way to define 
   organic food, but since the main goal of organic agriculture is to optimize the
-  biodiversity  as well as the ecological balance, the usage of synthetic chemicals
+  biodiversity as well as the ecological balance, the usage of synthetic chemicals
   are restricted (food unfolded 2019). In this study, the berry data collected by 
   the United States Department of Agriculture (USDA) database selector and stored 
   online was explored and analyzed to compare the types and quantities of chemicals
@@ -27,7 +27,7 @@ output: pdf_document
   information for the purpose of comparison and can be removed. It turns out that
   12 out of the 21 variables only have one unique value, such as "Program", "Week 
   Ending", "Geo Level" and etc. After the first step, the dataset now had 8 variables
-  and 3220 observations in total. Next, since the variable "Data Item" contains
+  and 3220 observations in total. Next, since the variable "Data Item" contained
   lots of different information in one single cell, it needs to be reorganized 
   and renamed. After this step, the variable "Data Item" were separated into 4 
   new variables, which are "berry" (types of berry), "market" (marketing condition),
@@ -111,7 +111,7 @@ strawberry %<>% mutate(units = str_trim(paste(u4, u5, u6, u7, u8)))
 strawberry %<>% select(Year, State, market, harvest, materials, chemical,
                        Value, units)
 unfood <- strawberry
-unfood %<>% filter(harvest == "APPLICATIONS") 
+unfood <- unfood %<>% filter(harvest == "APPLICATIONS") 
 unfood %<>% filter(Value != "(D)")
 unfood %<>% filter(Value !=  "(NA)")
 unfood %<>% filter(units == "LB / ACRE / APPLICATION")
@@ -172,8 +172,8 @@ knitr::kable(fungicide, caption = "Fungicide Application ", digits = 3) %>%
 ```
   
   
-  Based on the results of Table 2 below, in 2016 one farm in California had the lowest 
-  pounds of herbicide usage per acre per application, which was 0.091, while 
+  Based on the results of Table 2 below, in 2016 one farm in California had the 
+  lowest pounds of herbicide usage per acre per application, which was 0.091, while 
   also one farm in California had the highest usage, which was 1.382. However, in
   2018 and 2019, strawberry farms from Washington and Florida did not have any 
   herbicide application, which suggests that only strawberry farms from California 
@@ -193,7 +193,14 @@ knitr::kable(herbicide, caption = "Herbicide Application ", digits = 3) %>%
 ```
 
 
-  Based on the results of Table 3 below, in 2016 one farm in California had the lowest pounds of insecticide usage per acre per application, which was 0.019, while  also one farm in California had the highest usage, which was 5.86. In 2018, only farms in California had insecticide applications with a maximum pounds per acre of 6.34. In 2019, one farm in California had the lowest pounds of insecticide usage per acre per application, which was 0.019, while  again one farm in California had the highest usage, which was 5.151. Overall, regardless of which year, California always had the highest mean usage of insecticide.
+  Based on the results of Table 3 below, in 2016 one farm in California had the
+  lowest pounds of insecticide usage per acre per application, which was 0.019,
+  while also one farm in California had the highest usage, which was 5.86. In 2018, 
+  only farms in California had insecticide applications with a maximum pounds per 
+  acre of 6.34. In 2019, one farm in California had the lowest pounds of insecticide
+  usage per acre per application, which was 0.019, while also one farm in California 
+  had the highest usage, which was 5.151. Overall, regardless of which year,
+  California always had the highest mean usage of insecticide.
 
   
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
