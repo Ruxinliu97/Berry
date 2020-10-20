@@ -1,0 +1,174 @@
+---
+title: "Chemicals In Strawberry Farms"
+author: "Ruxin Liu"
+date: "10/20/2020"
+output: ioslides_presentation
+---
+
+```{r , include=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(kableExtra)
+unfood_table <- read.csv("Unfood.csv")
+```
+
+## Berry Data
+
+- Collected by the United States Department of Agriculture (USDA)
+  Available from: https://quickstats.nass.usda.gov/ 
+  
+- 13238 rows and 21 columns
+
+- Contained information about 3 kinds of berries: blueberries, raspberries & strawberries
+
+- Year ranged from 2015 - 2019
+
+- Goal: Compared the usage of synthetic chemicals applied for planting strawberries
+
+
+
+
+## Data Cleaning & Variable Selection
+
+- Removed 12 variables that only had one unique value, e.g "Program", "Week Ending",
+"Geo Level" and etc
+
+- Separated "Data Item" into "berry" (types of berry), "market" (marketing condition), 
+"harvest" (harvest condition) and "units" (units of values collected)
+
+- Reorganized and compared "Domain" and "Domain Category" into "materials" and "chemicals
+
+- 8 variables left after data cleaning: Year, State, market, harvest, materials, 
+chemical, Values and units
+
+- Removed all NA values and D values 
+
+- Created sub-dataset that showed the pounds of chemicals usage per acre per 
+application for strawberries
+ 
+  
+
+# Exploratory Data Analysis (EDA)
+
+## Difference among states
+- Continuous and relatively large use of chemicals California and Florida
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+unfood_table %>% 
+ggplot(aes(x = Year)) +
+  geom_bar(aes(fill = State)) +
+  ggtitle("Number Of Strawberry Farms That Used Chemicals")
+```
+
+## Difference among chemical types
+- Herbicides and insecticides were used the most 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+unfood_table %>% 
+ggplot(aes(x = Year)) +
+  geom_bar(aes(fill = chemical)) +
+  ggtitle("The Annual Usage Frequency Of Each Chemicals")
+```
+
+## Fungicide
+
+- Florida on average had a higher average pounds of fungicide usage per acre per
+application.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+fungicide <- unfood_table %>% 
+  filter(chemical == "FUNGICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(fungicide, digits = 3) %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+## Herbicide
+- California used herbicides continuously with relatively high level.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+herbicide <- unfood_table %>% 
+  filter(chemical == "HERBICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(herbicide, caption = "Herbicide Application ", digits = 3) %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+## Insecticide
+
+- California always had the highest mean usage of insecticide compared to other
+states. 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+insecticide <- unfood_table %>% 
+  filter(chemical == "INSECTICIDE") %>% 
+  group_by(Year, State) %>% 
+  summarise(min = min(as.numeric(Value)), 
+            max = max(as.numeric(Value)),
+            mean = mean(as.numeric(Value)), 
+            sum = sum(as.numeric(Value)))
+knitr::kable(insecticide, caption = "Insecticide Application ", digits = 3) %>% 
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+
+## Conclusion 
+
+- The pounds of usage per acre per chemical application differed by the type of
+chemicals and also the years.
+
+- For fungicides, herbicides and insecticides, the maximum usage per pound per 
+acre per application all happened in California. 
+
+- Suggests that there might be issues with the strawberry industry in California.
+
+- Large amount of harmful pesticide usage -- already an existing and noticed problem 
+in California
+
+- Maybe consider about organic strawberries?
+
+
+## Reference & Thank you for listening!
+<font size="3">
+- R Packages
+
+<font size="3"> 1. Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software,
+4(43),1686, https://doi.org/10.21105/joss.01686
+
+<font size="3"> 2.  Stefan Milton Bache and Hadley Wickham (2014). magrittr: A Forward-Pipe Operator
+for R. R package version 1.5. https://CRAN.R-project.org/package=magrittr
+
+<font size="3"> 3. H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New 
+York, 2016.
+
+<font size="3"> 4. Hao Zhu (2019). kableExtra: Construct Complex Table with 'kable' and Pipe Syntax. R
+  package version 1.1.0. https://CRAN.R-project.org/package=kableExtra
+  
+- Bibliography
+
+<font size="3"> 1. MA615 notes (class 14 - class 17)
+
+<font size="3"> 2. USDA (2019). *Quick Stats* [online]. Available from:
+https://quickstats.nass.usda.gov/results/D416E96E-3D5C-324C-9334-1D38DF88FFF1
+[accessed 16 October 2020].
+
+<font size="3"> 3. Smithsonian MAGAZINE (2018). *The Toxic Rise of the California Strawberry* 
+[online]. Available from:
+https://www.smithsonianmag.com/science-nature/toxic-rise-california-strawberry-180967934/
+[accessed 18 October 2020].
+
+<font size="3"> 4. The Guardian (2014). *California’s strawberry industry is hooked on dangerous pesticides* 
+[online]. Available from:
+https://www.theguardian.com/us-news/2014/nov/10/-sp-california-strawberry-industry-pesticides [accessed 18 October 2020].
+
+
+
+
+
